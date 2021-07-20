@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_toupper.c                                       :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tdayde <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/23 16:56:03 by tdayde            #+#    #+#             */
-/*   Updated: 2020/11/24 13:51:23 by tdayde           ###   ########lyon.fr   */
+/*   Created: 2020/11/26 10:19:52 by tdayde            #+#    #+#             */
+/*   Updated: 2021/02/23 17:36:40 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "philo.h"
 
-int	ft_toupper(int c)
+void	ft_putstr_fd(char *s, int fd)
 {
-	if (c >= 'a' && c <= 'z')
-		return (c - 32);
-	return (c);
+	if (s == NULL)
+		return ;
+	write(fd, s, ft_strlen(s));
 }

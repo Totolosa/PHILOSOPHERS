@@ -8,7 +8,6 @@
 # include <limits.h>
 # include <pthread.h>
 # include <sys/time.h>
-# include "libft.h"
 
 typedef struct	s_main
 {
@@ -37,5 +36,9 @@ typedef struct	s_philo
 int			quit_prog(char *str);
 void		free_all(t_main *main);
 long long	ft_atoi_philo(const char *str);
+void		*ft_calloc(size_t count, size_t size);
+void		ft_putstr_fd(char *s, int fd);
+void		ft_bzero(void *s, size_t n);
+size_t		ft_strlen(const char *s);
 
 #endif

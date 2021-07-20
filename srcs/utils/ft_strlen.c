@@ -1,35 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/24 17:47:55 by tdayde            #+#    #+#             */
-/*   Updated: 2020/12/01 12:37:59 by tdayde           ###   ########lyon.fr   */
+/*   Created: 2020/11/23 16:56:03 by tdayde            #+#    #+#             */
+/*   Updated: 2021/03/10 15:01:52 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "philo.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+size_t	ft_strlen(const char *s)
 {
 	size_t	i;
-	char	*new;
 
 	i = 0;
-	if (s == NULL)
-		return (NULL);
-	if (start >= ft_strlen(s))
-		return (ft_strdup(""));
-	new = malloc(sizeof(char) * (len + 1));
-	if (new == NULL)
-		return (NULL);
-	while (i < len && s[i + start])
+	while (s[i] != '\0')
 	{
-		new[i] = s[i + start];
 		i++;
 	}
-	new[i] = '\0';
-	return (new);
+	return (i);
 }

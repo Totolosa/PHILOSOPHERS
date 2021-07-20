@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "philo.h"
 
 static int	ft_isspace(char c)
 {
@@ -18,6 +18,14 @@ static int	ft_isspace(char c)
 		|| c == ' ')
 		return (1);
 	return (0);
+}
+
+static int	ft_isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+	else
+		return (0);
 }
 
 long long	ft_atoi_philo(const char *str)

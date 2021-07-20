@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/26 14:13:59 by tdayde            #+#    #+#             */
-/*   Updated: 2021/03/10 14:53:03 by tdayde           ###   ########lyon.fr   */
+/*   Created: 2020/11/23 16:56:03 by tdayde            #+#    #+#             */
+/*   Updated: 2021/03/10 14:51:13 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "philo.h"
 
-void	ft_lstadd_front(t_list **alst, t_list *new)
+void	ft_bzero(void *s, size_t n)
 {
-	t_list	*tmp;
+	size_t	i;
 
-	tmp = *alst;
-	*alst = new;
-	(*alst)->next = tmp;
+	i = 0;
+	while (i < n)
+	{
+		((unsigned char *)s)[i] = 0;
+		i++;
+	}
+	(void)s;
 }
