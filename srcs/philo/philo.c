@@ -1,5 +1,15 @@
 #include "philo.h"
 
+void	print_parsing(t_main *main)
+{
+	printf("PARSING :\n");
+	printf("nbr_philo = %lld\n", main->nbr_philo);
+	printf("time_die = %lld\n", main->time_die);
+	printf("time_eat = %lld\n", main->time_eat);
+	printf("time_sleep = %lld\n", main->time_sleep);
+	printf("eat_max = %lld\n", main->eat_max);
+}
+
 int	check_args(int argc, char **argv, t_main *main)
 {
 	main->nbr_philo = ft_atoi_philo(argv[1]);
@@ -20,6 +30,7 @@ int	check_args(int argc, char **argv, t_main *main)
 		if (main->eat_max < 1 || main->eat_max > INT_MAX)
 			return (quit_prog("ERROR number_of_times_philosopher_must_eat\n"));
 	}
+	print_parsing(main);
 	return (0);
 }
 
@@ -39,39 +50,36 @@ int	init_mutex(t_main *main)
 	return (0);
 }
 
-float	get_time(struct timeval *stop, struct timeval *start)
+int	time_diff(struct timeval *stop, struct timeval *start, t_main *main)
 {
-	float	sec;
-	float	mil;
-	float	res;
+	long	sec;
+	int		mil;
+	long	res;
 
-	sec = ((float)stop->tv_sec - (float)start->tv_sec) * 1000;
-	if (stop->tv_usec > start->tv_usec)
-		mil = ((float)stop->tv_usec - (float)start->tv_usec) / 1000;
-	else
-		mil = ((float)stop->tv_usec + (1000000 - (float)start->tv_usec)) / 1000;
+	(void)main;
+	// printf("\nget_time : stop.tv_sec = %ld, stop.tv_usec = %d, start->tv_sec = %ld, start->tv_usec = %d\n", stop->tv_sec, stop->tv_usec, start->tv_sec, start->tv_usec);
+	// if (start == NULL)
+	// 	start = main->start;
+	// sec = (stop->tv_sec - start->tv_sec) * 1000;
+	sec = (stop->tv_sec - start->tv_sec);
+	// printf("sec = %ld\n", sec);
+	if (sec != 0)
+		sec *= 1000;
+	// if (stop->tv_usec > start->tv_usec)
+	mil = (stop->tv_usec - start->tv_usec) / 1000;
+	// if (stop->tv_usec > start->tv_usec)
+	// 	mil = ((long)stop->tv_usec - (long)start->tv_usec) / 1000;
+	// else
+	// 	mil = ((long)stop->tv_usec + (1000000 - (long)start->tv_usec)) / 1000;
 	res = sec + mil;
-	// res = (((float)stop->tv_sec - (float)start->tv_sec) * 1000
-	// 	+ ((float)stop->tv_usec - (float)start->tv_usec) / 1000);
+	// res = (((long)stop->tv_sec - (long)start->tv_sec) * 1000
+	// 	+ ((long)stop->tv_usec - (long)start->tv_usec) / 1000);
+	if (main == NULL && res == 1000)
+		printf("time_diff : sec = %ld, mil = %d, res = %ld, stop->tv_sec - start->tv_sec = %ld\nstop->tv_sec = %ld, start->tv_sec = %ld, stop->tv_usec = %d, start->tv_usec = %d\n", sec, mil, res, stop->tv_sec - start->tv_sec, stop->tv_sec, start->tv_sec, stop->tv_usec, start->tv_usec);
 	return (res);
 }
 
-void	philo_dead(t_philo *philo)
-{
-	struct timeval	tmp;
-	
-	// tmp = NULL;
-	gettimeofday(&tmp, NULL);
-	if ((int)((tmp.tv_usec - philo->last_eat->tv_usec) / 1000) > philo->main->time_die)
-	{
-		philo->main->dead = 1;
-		// printf("%.2f : %d died\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
-		printf("%.2f : %d died\n", get_time(&tmp, philo->main->start), philo->i);
-	}
-	// return (NULL);
-}
-
-int	philo_eat(t_philo *philo)
+int	philo_eat(t_num_philo *philo)
 {
 	struct timeval	tmp;
 	
@@ -83,27 +91,29 @@ int	philo_eat(t_philo *philo)
 	// if (!philo->main->start->tv_usec)
 	// 	gettimeofday(philo->main->start, NULL);
 	gettimeofday(&tmp, NULL);
-	printf("timelaps = %.2f\n", get_time(&tmp, philo->main->start));
-	printf("\ntmp.tv_sec = %ld, tmp.tv_usec = %d, main->start->tv_sec = %ld, main->start->tv_usec = %d\n", tmp.tv_sec, tmp.tv_usec, philo->main->start->tv_sec, philo->main->start->tv_usec);
+	// printf("timelaps = %.2d\n", time_diff(&tmp, philo->main->start));
+	// printf("\ntmp.tv_sec = %ld, tmp.tv_usec = %d, main->start->tv_sec = %ld, main->start->tv_usec = %d\n", tmp.tv_sec, tmp.tv_usec, philo->main->start->tv_sec, philo->main->start->tv_usec);
 	// printf("%.2f : %d has taken a fork\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
-	printf("%.2f : %d has taken a fork\n", get_time(&tmp, philo->main->start), philo->i);
+	printf("%.2d : %d has taken a fork\n", time_diff(&tmp, philo->main->start, philo->main), philo->i);
 	gettimeofday(&tmp, NULL);
-	// printf("%.2f : %d has taken a fork\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
-	printf("%.2f : %d has taken a fork\n", get_time(&tmp, philo->main->start), philo->i);
+	// printf("%.2d : %d has taken a fork\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
 	pthread_mutex_lock(&philo->main->fork[philo->i]);
-	// printf("%.2f : %d is eating\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
-	if (philo->last_eat)
-	{
-		free(philo->last_eat);
-		philo->last_eat = NULL;
-	}
-	philo->last_eat = ft_calloc(1, sizeof(struct timeval));
-	if (!philo->last_eat)
-		return (quit_prog("Malloc philo->last_eat error\n"));
-	gettimeofday(philo->last_eat, NULL);
-	printf("%.2f : %d is eating\n", get_time(philo->last_eat, philo->main->start), philo->i);
+	printf("%.2d : %d has taken a fork\n", time_diff(&tmp, philo->main->start, philo->main), philo->i);
+
+	// if (philo->main->eat_philo[philo->i].last_eat)
+	// {
+	// 	free(philo->main->eat_philo[philo->i].last_eat);
+	// 	philo->main->eat_philo[philo->i].last_eat = NULL;
+	// }
+	// philo->main->eat_philo[philo->i].last_eat = ft_calloc(1, sizeof(struct timeval));
+	// if (!philo->main->eat_philo[philo->i].last_eat)
+	// 	return (quit_prog("Malloc philo->main->eat_philo[philo->i].last_eat error\n"));
+	gettimeofday(&philo->main->eat_philo[philo->i].last_eat, NULL);
+	printf("%.2d : %d is eating\n", time_diff(&philo->main->eat_philo[philo->i].last_eat, philo->main->start, philo->main), philo->i);
 	usleep(philo->main->time_eat * 1000);
-	philo->n_eat++;
+	if (philo->main->eat_max)
+		philo->main->eat_philo[philo->i].n_eat++;
+
 	if (philo->i == 0)
 		pthread_mutex_unlock(&philo->main->fork[philo->main->nbr_philo - 1]);
 	else
@@ -111,27 +121,48 @@ int	philo_eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->main->fork[philo->i]);
 	// printf("\nICI\n");
 	gettimeofday(&tmp, NULL);
-	// printf("%.2f : %d is sleeping\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
-	printf("%.2f : %d is sleeping\n", get_time(&tmp, philo->main->start), philo->i);
+	// printf("%.2d : %d is sleeping\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
+	printf("%.2d : %d is sleeping\n", time_diff(&tmp, philo->main->start, philo->main), philo->i);
 	usleep(philo->main->time_sleep * 1000);
 	gettimeofday(&tmp, NULL);
-	// printf("%.2f : %d is thinking\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
-	printf("%.2f : %d is thinking\n", get_time(&tmp, philo->main->start), philo->i);
+	// printf("%.2d : %d is thinking\n", ((float)(tmp.tv_usec - philo->main->start->tv_usec) / 1000), philo->i);
+	printf("%.2d : %d is thinking\n", time_diff(&tmp, philo->main->start, philo->main), philo->i);
 	// usleep(philo->main->time_sleep * 1000);
 	return (1);
 }
 
+void	is_philo_dead(int i, t_main *main)
+{
+	struct timeval	tmp;
+	long			diff;
+	
+	// tmp = NULL;
+	gettimeofday(&tmp, NULL);
+	// if ((int)((tmp.tv_usec - philo->last_eat->tv_usec) / 1000) > philo->main->time_die)
+	// printf("i = %d\n", i);
+	diff = time_diff(&tmp, &main->eat_philo[i].last_eat, NULL);
+	if ((long long)diff > main->time_die)
+	{
+		printf("He died because he stayed %ld ms without eat\n", diff);
+		main->dead = 1;
+		printf("%.2d : %d died\n", time_diff(&tmp, main->start, main), i);
+		// diff += 100000;
+	}
+	// return (NULL);
+}
+
 void	*exec(void *arg)
 {
-	t_philo	*philo;
+	t_num_philo	*philo;
 	
-	philo = (t_philo *)arg;
+	philo = (t_num_philo *)arg;
 	printf("Philospher %d created\n", philo->i);
 	while (!philo->main->dead
-		|| (philo->main->eat_max && philo->n_eat < philo->main->eat_max))
+		|| (philo->main->eat_max
+		&& philo->main->eat_philo[philo->i].n_eat < philo->main->eat_max))
 	{
 		philo_eat(philo);
-		printf("fin philo_eat\n");
+		// printf("fin philo_eat\n");
 		// philo_dead(philo);
 	}
 	free(philo);
@@ -140,25 +171,28 @@ void	*exec(void *arg)
 
 int	create_threads(t_main *main)
 {
-	int		i;
-	t_philo	*philo;
+	int			i;
+	t_num_philo	*n_philo;
 	
-	philo = NULL;
-	main->philos = ft_calloc(main->nbr_philo, sizeof(pthread_t));
-	if (!main->philos)
+	// philo = NULL;
+	main->tread_philo = ft_calloc(main->nbr_philo, sizeof(pthread_t));
+	if (!main->tread_philo)
+		return (quit_prog("Malloc main->tread_philo error\n"));
+	main->eat_philo = ft_calloc(main->nbr_philo, sizeof(t_eat_philo));
+	if (!main->eat_philo)
 		return (quit_prog("Malloc main->philos error\n"));
+	// gettimeofday(&main.start, NULL);
 	// gettimeofday(main->start, NULL);
 	// printf("test\n");
 	// printf("main->start->tv_usec = %ld\n",main->start->tv_usec);
 	i = 0;
 	while (i < main->nbr_philo)
 	{
-		philo = ft_calloc(1, sizeof(t_philo));
-		if (!philo)
+		n_philo = ft_calloc(1, sizeof(t_num_philo));
+		if (!n_philo)
 			return (quit_prog("Malloc philo error\n"));
-		// printf("test\n");
-		philo->i = i;
-		philo->main = main;
+		n_philo->i = i;
+		n_philo->main = main;
 		if (!main->start)
 		{
 			main->start = ft_calloc(1, sizeof(struct timeval));
@@ -167,20 +201,23 @@ int	create_threads(t_main *main)
 			gettimeofday(main->start, NULL);
 			printf("main->start->tv_usec = %d\n",main->start->tv_usec);
 		}
-		if (pthread_create(&main->philos[i++], NULL, &exec, philo) != 0)
-			return (quit_prog("ERROR pthread_create\n")); 
+		if (pthread_create(&main->tread_philo[i++], NULL, &exec, n_philo) != 0)
+			return (quit_prog("ERROR pthread_create\n"));
+		usleep(1000);
 	}
 	while (!main->dead)
 		// || (philo->main->eat_max && philo->n_eat < philo->main->eat_max))
 	{
 		// philo_eat(philo);
 		// printf("fin philo_eat\n");
-		philo_dead(philo);
+		i = 0;
+		while (i < main->nbr_philo)
+			is_philo_dead(i++, main);
 	}
 	i = 0;
 	while (i < main->nbr_philo)
 	{
-		if (pthread_join(main->philos[i++], NULL) != 0)
+		if (pthread_join(main->tread_philo[i++], NULL) != 0)
 			return (quit_prog("ERROR pthread_join\n"));
 	}
 	return (0);

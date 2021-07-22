@@ -15,8 +15,10 @@ void	free_all(t_main *main)
 	if (main->fork)
 		while (i < main->nbr_philo)
 			pthread_mutex_destroy(&main->fork[i++]);
-	if (main->philos)
-		free(main->philos);
+	if (main->tread_philo)
+		free(main->tread_philo);
+	if (main->eat_philo)
+		free(main->eat_philo);
 	if (main->fork)
 		free(main->fork);
 	if (main->start)

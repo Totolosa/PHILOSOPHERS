@@ -9,29 +9,33 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+typedef struct	s_eat_philo
+{
+	int				n_eat;
+	struct timeval	last_eat;
+}				t_eat_philo;
+
 typedef struct	s_main
 {
 	long long		nbr_philo;
-	pthread_t		*philos;
+	pthread_t		*tread_philo;
+	t_eat_philo		*eat_philo;
 	pthread_mutex_t	*fork;
 	long long		time_die;
 	long long		time_eat;
 	long long		time_sleep;
 	long long		eat_max;
 	struct timeval	*start;
-	// pthread_mutex_t	*fork;
 	int				dead;
 	int				*i;
 	int				code_out;
 }				t_main;
 
-typedef struct	s_philo
+typedef struct	s_num_philo
 {
 	int				i;
-	int				n_eat;
-	struct timeval	*last_eat;
 	t_main			*main;
-}				t_philo;
+}				t_num_philo;
 
 int			quit_prog(char *str);
 void		free_all(t_main *main);
