@@ -13,6 +13,8 @@ typedef struct	s_eat_philo
 {
 	int				n_eat;
 	struct timeval	last_eat;
+	pthread_mutex_t	lock;
+	int				done;
 }				t_eat_philo;
 
 typedef struct	s_main
@@ -21,11 +23,14 @@ typedef struct	s_main
 	pthread_t		*tread_philo;
 	t_eat_philo		*eat_philo;
 	pthread_mutex_t	*fork;
-	long long		time_die;
+	pthread_mutex_t	print;
+	int				*philos_done;
+	int				done;
+	long			time_die;
 	long long		time_eat;
 	long long		time_sleep;
 	long long		eat_max;
-	struct timeval	*start;
+	struct timeval	start;
 	int				dead;
 	int				*i;
 	int				code_out;
