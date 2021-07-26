@@ -1,3 +1,9 @@
 objs
 tests
-philo
+# .philo
+# !.philo/*
+
+# *
+# !.gitignore
+# !Makefile
+# !include

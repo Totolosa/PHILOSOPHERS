@@ -18,8 +18,14 @@ DIR_SRCS		= srcs
 DIR_PHILO		= $(DIR_SRCS)/philo
 DIR_BONUS		= $(DIR_SRCS)/philo_bonus
 DIR_UTILS		= $(DIR_SRCS)/utils
-SRCS_PHILO		=	philo.c 
-SRCS_BONUS		=	#philo_bonus.c 
+SRCS_PHILO		=	main.c \
+					philo_life.c \
+					start.c \
+					utils.c
+SRCS_BONUS		=	main_bonus.c \
+					philo_life_bonus.c \
+					start_bonus.c \
+					utils_bonus.c
 SRCS_UTILS		=	quit_prog.c \
 					ft_calloc.c \
 					ft_bzero.c \
@@ -34,14 +40,13 @@ OBJS_PHILO		= ${LST_PHILO:srcs/%.c=$(DIR_OBJS)/%.o} ${OBJS_UTILS}
 OBJS_BONUS		= ${LST_BONUS:srcs/%.c=$(DIR_OBJS)/%.o} ${OBJS_UTILS}
 DIR_OBJS		= objs
 CC				= gcc -pthread
-# CFLAGS			= -Wall -Werror -Wextra
-CFLAGS			=  -g3 -Wall -Werror -Wextra -fsanitize=address
+CFLAGS			= -Wall -Werror -Wextra
+# CFLAGS			=  -g3 -Wall -Werror -Wextra -fsanitize=address
 INCLUDE			= -Iinclude -I${LIBFT}/include
 RM				= rm -rf
 MKDIR			= mkdir -p
-# LIBFT			= libft
 
-all:			${NAME_PHILO} #$(NAME_BONUS)
+all:			${NAME_PHILO} $(NAME_BONUS)
 
 $(DIR_OBJS):
 				$(MKDIR) $@
