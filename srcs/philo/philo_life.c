@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_life.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 19:47:22 by tdayde            #+#    #+#             */
+/*   Updated: 2021/09/08 19:49:18 by tdayde           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static void	philo_eat(t_num_philo *phil)
@@ -37,7 +49,8 @@ void	*philosopher_life(void *arg)
 	while (!phil->main->dead && !phil->main->eat_philo[phil->i].done)
 	{
 		if (phil->i == 0)
-			pthread_mutex_lock(&phil->main->fork_mut[phil->main->nbr_philo - 1]);
+			pthread_mutex_lock(&phil->main->fork_mut[phil->main->nbr_philo
+				- 1]);
 		else
 			pthread_mutex_lock(&phil->main->fork_mut[phil->i - 1]);
 		print_str_mutex("has taken a fork", phil->i, phil->main);
@@ -45,7 +58,8 @@ void	*philosopher_life(void *arg)
 		print_str_mutex("has taken a fork", phil->i, phil->main);
 		philo_eat(phil);
 		if (phil->i == 0)
-			pthread_mutex_unlock(&phil->main->fork_mut[phil->main->nbr_philo - 1]);
+			pthread_mutex_unlock(&phil->main->fork_mut[phil->main->nbr_philo
+				- 1]);
 		else
 			pthread_mutex_unlock(&phil->main->fork_mut[phil->i - 1]);
 		pthread_mutex_unlock(&phil->main->fork_mut[phil->i]);

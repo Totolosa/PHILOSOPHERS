@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 19:47:37 by tdayde            #+#    #+#             */
+/*   Updated: 2021/09/08 19:47:38 by tdayde           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static void	is_philo_dead_or_sated(t_main *main)
@@ -24,7 +36,7 @@ static void	is_philo_dead_or_sated(t_main *main)
 				philo_sated++;
 			}
 		}
-		if (i == main->nbr_philo)
+		if (i == main->nbr_philo - 1)
 			i = -1;
 	}
 }

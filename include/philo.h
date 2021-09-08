@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 20:01:55 by tdayde            #+#    #+#             */
+/*   Updated: 2021/09/08 20:01:58 by tdayde           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -30,11 +42,13 @@ typedef struct s_main
 	int				dead;
 	sem_t			*fork_sem;
 	sem_t			*print_sem;
-	sem_t			*dead_sem;
+	sem_t			*start_sem;
+	pthread_t		*end_main;
 	pid_t			*pid_forks;
 	int				i;
 	t_eat_philo		*eat_philo;
 	int				*philos_done;
+	int				philos_done_sem;
 	int				done;
 	long			time_die;
 	long long		time_eat;
@@ -43,11 +57,6 @@ typedef struct s_main
 	struct timeval	start;
 	int				code_out;
 }				t_main;
-
-typedef struct s_main_bonus
-{
-
-}				t_main_bonus;
 
 typedef struct s_num_philo
 {
@@ -65,7 +74,6 @@ int			time_diff(struct timeval *start);
 void		philosopher_life_bonus(t_main *main);
 void		print_str_sem(char *str, int i, t_main *main);
 void		*analyse_philo_proces(void *arg);
-
 
 int			quit_prog(char *str);
 void		free_all(t_main *main);

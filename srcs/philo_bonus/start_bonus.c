@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   start_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 19:54:28 by tdayde            #+#    #+#             */
+/*   Updated: 2021/09/08 20:00:56 by tdayde           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	check_args(int argc, char **argv, t_main *main)
@@ -23,18 +35,10 @@ int	check_args(int argc, char **argv, t_main *main)
 	return (0);
 }
 
-int	init(t_main *main)
+static int	init2(t_main *main)
 {
 	int	i;
 
-	sem_unlink("fork_semaphore");
-	sem_unlink("print_semaphore");
-	main->fork_sem = sem_open("fork_semaphore", IPC_CREAT, 0660, main->nbr_philo);
-	if (main->fork_sem == SEM_FAILED)
-		return (quit_prog("sem_open fork_sem error\n"));
-	main->print_sem = sem_open("print_semaphore", IPC_CREAT, 0660, 1);
-	if (main->print_sem == SEM_FAILED)
-		return (quit_prog("sem_open print_sem error\n"));
 	main->pid_forks = ft_calloc(main->nbr_philo, sizeof(pid_t));
 	if (!main->pid_forks)
 		return (quit_prog("Malloc main->pid_forks error\n"));
@@ -52,4 +56,22 @@ int	init(t_main *main)
 		while (i < main->nbr_philo)
 			main->eat_philo[i++].n_eat = -1;
 	return (0);
+}
+
+int	init(t_main *main)
+{
+	sem_unlink("fork_semaphore");
+	sem_unlink("print_semaphore");
+	sem_unlink("start_semaphore");
+	main->fork_sem = sem_open("fork_semaphore", IPC_CREAT,
+			0660, main->nbr_philo);
+	if (main->fork_sem == SEM_FAILED)
+		return (quit_prog("sem_open fork_sem error\n"));
+	main->print_sem = sem_open("print_semaphore", IPC_CREAT, 0660, 1);
+	if (main->print_sem == SEM_FAILED)
+		return (quit_prog("sem_open print_sem error\n"));
+	main->start_sem = sem_open("start_semaphore", IPC_CREAT, 0660, 0);
+	if (main->start_sem == SEM_FAILED)
+		return (quit_prog("sem_open start_sem error\n"));
+	return (init2(main));
 }

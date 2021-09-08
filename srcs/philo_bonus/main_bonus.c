@@ -1,45 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/08 19:49:42 by tdayde            #+#    #+#             */
+/*   Updated: 2021/09/08 19:50:25 by tdayde           ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-// static void	is_philo_dead_or_sated(void *arg)
-// {
-// 	t_main	*main;
-// 	int	i;
-// 	int	philo_sated;
+void	*end_philo(void *arg)
+{
+	t_num_philo	*philo;
+	int			res;
+	int			j;
 
-// 	main = (t_main *)arg;
-// 	philo_sated = 0;
-// 	i = -1;
-// 	while (!main->dead && philo_sated < main->nbr_philo)
-// 	{
-// 		if (!main->philos_done[++i])
-// 		{
-// 			if (time_diff(&main->eat_philo[i].last_eat) > main->time_die)
-// 			{
-// 				main->dead = 1;
-// 				print_str_mutex("died", i, main);
-// 			}
-// 			pthread_mutex_unlock(&main->eat_philo[i].lock);
-// 			if (main->eat_philo[i].done)
-// 			{
-// 				main->philos_done[i] = 1;
-// 				philo_sated++;
-// 			}
-// 		}
-// 		if (i == main->nbr_philo)
-// 			i = -1;
-// 	}
-// }
+	philo = (t_num_philo *)arg;
+	waitpid(philo->main->pid_forks[philo->i], &res, WEXITSTATUS(res));
+	if (res == 256)
+	{
+		philo->main->dead = 1;
+		j = -1;
+		while (++j < philo->main->nbr_philo)
+			if (j != philo->i)
+				kill(philo->main->pid_forks[j], SIGKILL);
+	}
+	else if (res == 512)
+		philo->main->philos_done_sem++;
+	return (NULL);
+}
+
+int	end_main(t_main *main)
+{
+	int			i;
+	t_num_philo	*philo;
+
+	i = 0;
+	philo = NULL;
+	main->end_main = ft_calloc(main->nbr_philo, sizeof(pthread_t));
+	if (!main->tread_philo)
+		return (quit_prog("Malloc main->end_main error\n"));
+	while (i < main->nbr_philo)
+	{
+		if (init_philo(i, &philo, main))
+			return (1);
+		if (pthread_create(&main->end_main[i++], NULL,
+				&end_philo, philo) != 0)
+			return (quit_prog("ERROR pthread_create\n"));
+	}
+	i = 0;
+	while (i < main->nbr_philo)
+		if (pthread_join(main->end_main[i++], NULL) != 0)
+			return (quit_prog("ERROR pthread_join\n"));
+	if (!main->dead && main->philos_done_sem == main->nbr_philo)
+		printf("ALL PHILOSOPHERS ARE SATED!\n");
+	return (0);
+}
 
 int	philo_forks(t_main *main)
 {
 	int	i;
-	int j;
-	int	res;
-	// t_num_philo	*philo;
 
 	i = -1;
-	// philo = NULL;
-	gettimeofday(&main->start, NULL);
 	while (++i < main->nbr_philo)
 	{
 		main->pid_forks[i] = fork();
@@ -52,36 +77,10 @@ int	philo_forks(t_main *main)
 			philosopher_life_bonus(main);
 		}
 	}
-	// is_philo_dead_or_sated(main);
 	i = -1;
-	res = 0;
-	while (++i < main->nbr_philo && res != 1)
-	{
-		waitpid(main->pid_forks[i], &res, WEXITSTATUS(res));
-		if (res == 1)
-		{
-			j = -1;
-			while (++j < main->nbr_philo)
-				if (j != i)
-					kill(main->pid_forks[j], SIGKILL);
-		}
-
-	}
-	if (res != 1)
-		printf("ALL PHILOSOPHERS ARE SATED!\n");
-		
-	// 	if (pthread_create(&main->tread_philo[i++], NULL,
-	// 			&philosopher_life, philo) != 0)
-	// 		return (quit_prog("ERROR pthread_create\n"));
-	// 	usleep(50);
-	// }
-	// is_philo_dead_or_sated(main);
-	// i = 0;
-	// while (i < main->nbr_philo)
-	// 	if (pthread_join(main->tread_philo[i++], NULL) != 0)
-	// 		return (quit_prog("ERROR pthread_join\n"));
-	// if (!main->dead && main->eat_max)
-	// 	printf("ALL PHILOSOPHERS ARE SATED!\n");
+	while (++i < main->nbr_philo)
+		sem_post(main->start_sem);
+	end_main(main);
 	return (0);
 }
 
