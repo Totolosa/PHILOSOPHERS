@@ -6,7 +6,7 @@
 /*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 19:51:13 by tdayde            #+#    #+#             */
-/*   Updated: 2021/09/08 20:00:46 by tdayde           ###   ########lyon.fr   */
+/*   Updated: 2021/09/09 21:06:33 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,13 @@ void	*analyse_philo_proces(void *arg)
 		{
 			if (time_diff(&main->eat_philo[main->i].last_eat) > main->time_die)
 			{
-				print_str_sem("is dead", main->i, main);
+				sem_wait(main->print_sem);
+				printf("%d : %d is dead\n", time_diff(&main->start), main->i);
 				exit(1);
 			}
 		}
 		else if (main->eat_philo[main->i].n_eat == main->eat_max)
-		{
-			print_str_sem("is done", main->i, main);
 			exit(2);
-		}
 	}
 	return (NULL);
 }
@@ -64,6 +62,7 @@ void	philosopher_life_bonus(t_main *main)
 	if (main->i > main->nbr_philo / 2)
 		usleep(10);
 	gettimeofday(&main->start, NULL);
+	main->eat_philo[main->i].last_eat = main->start;
 	while (42)
 	{
 		sem_wait(main->fork_sem);

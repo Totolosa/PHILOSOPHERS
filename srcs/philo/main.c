@@ -6,11 +6,18 @@
 /*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 19:47:37 by tdayde            #+#    #+#             */
-/*   Updated: 2021/09/08 19:47:38 by tdayde           ###   ########lyon.fr   */
+/*   Updated: 2021/09/09 21:17:12 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static void	death_philo(int i, t_main *main)
+{
+	main->dead = 1;
+	pthread_mutex_lock(&main->print_mut);
+	printf("%d : %d is dead\n", time_diff(&main->start), i);
+}
 
 static void	is_philo_dead_or_sated(t_main *main)
 {
@@ -25,10 +32,7 @@ static void	is_philo_dead_or_sated(t_main *main)
 		{
 			pthread_mutex_lock(&main->eat_philo[i].lock);
 			if (time_diff(&main->eat_philo[i].last_eat) > main->time_die)
-			{
-				main->dead = 1;
-				print_str_mutex("died", i, main);
-			}
+				death_philo(i, main);
 			pthread_mutex_unlock(&main->eat_philo[i].lock);
 			if (main->eat_philo[i].done)
 			{
@@ -46,23 +50,22 @@ int	create_threads(t_main *main)
 	int			i;
 	t_num_philo	*philo;
 
-	i = 0;
+	i = -1;
 	philo = NULL;
 	gettimeofday(&main->start, NULL);
-	while (i < main->nbr_philo)
+	while (++i < main->nbr_philo)
 	{
 		if (init_philo(i, &philo, main))
 			return (1);
-		if (pthread_create(&main->tread_philo[i++], NULL,
+		if (pthread_create(&main->tread_philo[i], NULL,
 				&philosopher_life, philo) != 0)
 			return (quit_prog("ERROR pthread_create\n"));
+		if (pthread_detach(main->tread_philo[i]) != 0)
+			return (quit_prog("ERROR pthread_join\n"));
 		usleep(50);
 	}
 	is_philo_dead_or_sated(main);
-	i = 0;
-	while (i < main->nbr_philo)
-		if (pthread_join(main->tread_philo[i++], NULL) != 0)
-			return (quit_prog("ERROR pthread_join\n"));
+	usleep(100000);
 	if (!main->dead && main->eat_max)
 		printf("ALL PHILOSOPHERS ARE SATED!\n");
 	return (0);

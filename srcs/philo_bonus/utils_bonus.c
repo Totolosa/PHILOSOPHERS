@@ -6,7 +6,7 @@
 /*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 19:58:22 by tdayde            #+#    #+#             */
-/*   Updated: 2021/09/08 19:58:35 by tdayde           ###   ########lyon.fr   */
+/*   Updated: 2021/09/09 20:54:24 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,23 @@ int	init_philo(int i, t_num_philo **philo, t_main *main)
 		return (quit_prog("Malloc philo error\n"));
 	(*philo)->i = i;
 	(*philo)->main = main;
-	pthread_mutex_init(&main->eat_philo[i].lock, NULL);
 	return (0);
+}
+
+void	free_all_bonus(t_main *main)
+{
+	int	i;
+
+	i = 0;
+	sem_close(main->fork_sem);
+	if (main->tread_philo)
+		free(main->tread_philo);
+	if (main->eat_philo)
+		free(main->eat_philo);
+	if (main->fork_mut)
+		free(main->fork_mut);
+	if (main->philos_done)
+		free(main->philos_done);
+	if (main->end_main)
+		free(main->end_main);
 }
