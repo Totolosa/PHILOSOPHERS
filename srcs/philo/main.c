@@ -6,7 +6,7 @@
 /*   By: tdayde <tdayde@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 19:47:37 by tdayde            #+#    #+#             */
-/*   Updated: 2021/09/09 21:17:12 by tdayde           ###   ########lyon.fr   */
+/*   Updated: 2021/09/13 11:33:41 by tdayde           ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,12 @@ int	create_threads(t_main *main)
 		usleep(50);
 	}
 	is_philo_dead_or_sated(main);
-	usleep(100000);
+	usleep(300000);
 	if (!main->dead && main->eat_max)
+	{
+		pthread_mutex_lock(&main->print_mut);
 		printf("ALL PHILOSOPHERS ARE SATED!\n");
+	}
 	return (0);
 }
 
